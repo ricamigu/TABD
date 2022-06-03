@@ -71,7 +71,7 @@ CREATE TABLE db_datawarehousing.fact(
     
     swimTime    VARCHAR(25), /*Vem do result*/
     points      VARCHAR(25), /*Vem do result*/
-    poolName    VARCHAR(50),
+    poolName    VARCHAR(50), /*Vem do pool*/
 
     FOREIGN KEY (athleteid) REFERENCES db_datawarehousing.athlete(athleteid),
     FOREIGN KEY (swimstyleid) REFERENCES db_datawarehousing.swimstyle(swimstyleid),
@@ -79,10 +79,10 @@ CREATE TABLE db_datawarehousing.fact(
     FOREIGN KEY (meetid) REFERENCES db_datawarehousing.meet(meetid)
 );
 
-INSERT INTO db_datawarehousing.fact(athleteid, clubid, meetid, swimstyleid) 
-    SELECT athlete.athleteid, club.clubid, meet.meetid, swimstyle.swimstyleid 
-    FROM db_annp.athlete, db_annp.club, db_annp.meet, db_annp.swimstyle, db_annp.event, db_annp.session 
+INSERT INTO db_datawarehousing.fact(athleteid, clubid, meetid, swimstyleid, poolName, swimTime, points) 
+    SELECT athlete.athleteid, club.clubid, meet.meetid, swimstyle.swimstyleid , pool.name, result.swimTime, result.points
+    FROM db_annp.athlete, db_annp.club, db_annp.meet, db_annp.swimstyle, db_annp.event, db_annp.session , db_annp.pool, db_annp.result
     WHERE athlete.clubid = club.clubid and club.meetid = meet.meetid and 
-    swimstyle.eventid = event.eventid and event.sessionid = session.sessionid and session.meetid = meet.meetid
+    swimstyle.eventid = event.eventid and event.sessionid = session.sessionid and session.meetid = meet.meetid and pool.meetid =meet.meetid and result.athleteid = athlete.athleteid
 ;
 
