@@ -79,8 +79,10 @@ CREATE TABLE db_datawarehousing.fact(
     FOREIGN KEY (meetid) REFERENCES db_datawarehousing.meet(meetid)
 );
 
-INSERT INTO db_datawarehousing.fact(athleteid, clubid) 
-    SELECT athlete.athleteid, club.clubid FROM db_annp.athlete, db_annp.club WHERE athlete.clubid = club.clubid;
+INSERT INTO db_datawarehousing.fact(athleteid, clubid, meetid, swimstyleid) 
+    SELECT athlete.athleteid, club.clubid, meet.meetid, swimstyle.swimstyleid 
+    FROM db_annp.athlete, db_annp.club, db_annp.meet, db_annp.swimstyle, db_annp.event, db_annp.session 
+    WHERE athlete.clubid = club.clubid and club.meetid = meet.meetid and 
+    swimstyle.eventid = event.eventid and event.sessionid = session.sessionid and session.meetid = meet.meetid
+;
 
-INSERT INTO db_datawarehousing.fact(points, swimTime)
-    SELECT result.points, result.swimTime FROM db_annp.result WHERE db_annp.result.resultid = db_datawarehousing.athlete.athleteid
