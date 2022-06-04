@@ -6,7 +6,7 @@ USE db_annp
 
 CREATE TABLE db_datawarehousing.swimstyle(
     swimstyleid     INT NOT NULL,
-    distance        VARCHAR(25),
+    distance        INT,
     stroke          VARCHAR(25),
     relaycount      VARCHAR(25),
 
@@ -70,7 +70,7 @@ CREATE TABLE db_datawarehousing.fact(
     meetid      INT,   
     
     swimTime    VARCHAR(25), /*Vem do result*/
-    points      VARCHAR(25), /*Vem do result*/
+    points      INT,   /*Vem do result*/
     poolName    VARCHAR(50), /*Vem do pool*/
 
     FOREIGN KEY (athleteid) REFERENCES db_datawarehousing.athlete(athleteid),
