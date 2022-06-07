@@ -34,7 +34,7 @@ def average_stroke_gender(conn):
 
     plt.xticks(X_axis, stroke)
 
-    plt.bar(X_axis - 0.2, values_male, color = 'b',
+    plt.bar(X_axis - 0.2, values_male, color = 'royalblue',
             width = width, edgecolor = 'black',
             label='Male')
     plt.bar(X_axis + 0.2, values_female, color = 'pink',
@@ -44,6 +44,7 @@ def average_stroke_gender(conn):
     plt.xlabel("Strokes")
     plt.ylabel("Average points")
     plt.title("Average points by stroke type and gender")
+    plt.legend()
     plt.show()
 
 # average time by stroke and gender
@@ -77,7 +78,7 @@ def average_stroke_time(conn):
 
     plt.xticks(X_axis, stroke)
 
-    plt.bar(X_axis - 0.2, values_male, color = 'b',
+    plt.bar(X_axis - 0.2, values_male, color = 'royalblue',
             width = width, edgecolor = 'black',
             label='Male')
     plt.bar(X_axis + 0.2, values_female, color = 'pink',
@@ -87,6 +88,7 @@ def average_stroke_time(conn):
     plt.xlabel("Strokes")
     plt.ylabel("Average time in miliseconds")
     plt.title("Average miliseconds by stroke type and gender")
+    plt.legend()
     plt.show()
 
 
@@ -171,24 +173,65 @@ def ages_by_club(conn):
 
     minList = data_min.items()
     xmin, ymin = zip(*minList)
-    plt.plot(xmin, ymin, linewidth=0.5, color="blue")
+    plt.plot(xmin, ymin, label="Min", linewidth=0.5, color="blue")
 
     avgList = data_avg.items()
     xavg, yavg = zip(*avgList)
-    plt.plot(xavg, yavg, linewidth=2, linestyle="--", color="orange")
+    plt.plot(xavg, yavg, label="Average", linewidth=2, linestyle="--", color="orange")
 
     maxList = data_max.items()
     xmax, ymax = zip(*maxList)
-    plt.plot(xmax, ymax, linewidth=0.5, color="red")
+    plt.plot(xmax, ymax, label="Max", linewidth=0.5, color="red")
 
     plt.title("Average age per club")
     plt.xlabel("Clubs (Code)")
     plt.ylabel("Ages")
+    plt.legend()
     plt.xticks(rotation=90)
     plt.fill_between(xavg, yavg, ymax, color='red', alpha=.2)
     plt.fill_between(xavg, yavg, ymin, color='blue', alpha=.2)
     plt.show()
 
+
+def category_by_gender(conn):
+
+    sql = "select newTab2.age_range, AVG(newTab2.points) as avg_points, gender from (select fact.athleteid, points, gender, case when newTable.age between 25 and 29 then 'A' when newTable.age between 30 and 34 then 'B' \
+            when newTable.age between 35 and 39 then 'C' when newTable.age between 40 and 44 then 'D' when newTable.age between 45 and 49 then 'E' when newTable.age between 50 and 54 then 'F' \
+            when newTable.age between 55 and 59 then 'G' when newTable.age between 60 and 64 then 'H' when newTable.age between 65 and 69 then 'I' when newTable.age between 70 and 74 then 'J' \
+            when newTable.age between 75 and 79 then 'K' when newTable.age between 80 and 84 then 'L' when newTable.age between 85 and 89 then 'M' when newTable.age between 90 and 94 then 'N' \
+            when newTable.age between 95 and 99 then 'O' END as age_range, newTable.age from (select gender, fact.athleteid, EXTRACT(year FROM age(current_date,birthdate::timestamp)) :: int as age \
+            from athlete, fact where fact.athleteid = athlete.athleteid)newTable, fact where newTable.athleteId = fact.athleteId and points is not null \
+            order by age)newTab2 group by rollup(newTab2.age_range, gender) order by newTab2.age_range"
+
+    cursor_psql = conn.cursor()
+
+    cursor_psql.execute(sql)
+    results = cursor_psql.fetchall()
+
+    data_male = {}
+    data_avg = {}
+    data_female = {}
+
+    for row in results:
+        if(row[2] == 'M'): data_male[row[0]] = int(row[1])
+        elif(row[2] == 'F'): data_female[row[0]] = int(row[1])
+        else: 
+            if(row[0] != None): data_avg[row[0]] = int(row[1])
+
+    categories = list(data_avg.keys())
+    values_male = list(data_male.values())
+    values_female = list(data_female.values())
+    values_avg = list(data_avg.values())
+
+    plt.title("Points by category and gender")
+    plt.xlabel("Categories")
+    plt.ylabel("Points")
+    plt.xticks([0,1,2,3,4,5,6,7,8,9,10,11], categories)
+    plt.plot(values_male, label="Males", color='royalblue')
+    plt.plot(values_female, label="Females", color='pink')
+    plt.plot(values_avg, label="Average", color='orange', linestyle="--", linewidth=0.5)
+    plt.legend()
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -200,3 +243,4 @@ if __name__ == '__main__':
     ages_by_club(conn)
     count_club(conn)
     top_10_clubs(conn)
+    category_by_gender(conn)
