@@ -44,6 +44,7 @@ def xml_to_sql(folders_path):
         sql_annp_final_inputs = create_annp_final_inputs(json_file['LENEX']["MEETS"]['MEET'], id_key)
         folder_path = '/'.join(file_path.split('/')[0:-1])
         save_annp_final_inputs_sql(sql_annp_final_inputs, folder_path)
+        id_key = id_key + 1
     
     save_global_json(global_json)
     json_to_sql(global_json, 'annp', './')

@@ -58,9 +58,6 @@ INSERT INTO athlete(athleteid, completeName, nation, birthdate, license,gender)
 INSERT INTO meet(meetid, city, name, organizer, number, course)
     SELECT meetid, city, name, organizer, number::INT, course FROM old_meet;
 
-/* TODO: Preencher depois
-INSERT INTO db_datawarehousing.meet(meetid, dateStart, dateEnd) 
-    SELECT old_meet.meetid, MIN(date), MAX(date) FROM old_session, old_meet where db_datawarehousing.meet.meetid = old_session.meetid GROUP BY old_session.meetid;*/
 
 CREATE TABLE fact(
     athleteid   INT,    
@@ -68,8 +65,8 @@ CREATE TABLE fact(
     clubid      INT,   
     meetid      INT,   
     
-    swimTime    VARCHAR(25), /*Vem do result*/
-    points      INT, /*Vem do result*/
+    swimTime    VARCHAR(25),
+    points      INT, 
 
     FOREIGN KEY (athleteid) REFERENCES athlete(athleteid),
     FOREIGN KEY (swimstyleid) REFERENCES swimstyle(swimstyleid),
@@ -77,14 +74,6 @@ CREATE TABLE fact(
     FOREIGN KEY (meetid) REFERENCES meet(meetid)
 );
 
-/*
-INSERT INTO fact(athleteid, clubid, meetid, swimstyleid, poolName, swimTime, points) 
-    SELECT old_athleteid, old_clubid, old_meetid, old_swimstyleid , pool.name, result.swimTime, result.points
-    FROM old_athlete, old_club, old_meet, old_swimstyle, old_event, old_session , old_pool, old_result
-    WHERE athlete.clubid = club.clubid and club.meetid = meet.meetid and 
-    swimstyle.eventid = event.eventid and event.sessionid = session.sessionid and session.meetid = meet.meetid and pool.meetid =meet.meetid and result.athleteid = athlete.athleteid
-;
-*/
 
 INSERT INTO fact(athleteid, clubid, meetid, swimstyleid, swimTime, points) 
     SELECT old_athlete.athleteid, old_club.clubid, old_meet.meetid, old_swimstyle.swimstyleid, old_result.swimTime, old_result.points

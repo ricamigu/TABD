@@ -16,7 +16,7 @@ sql = "select newTab2.age_range, AVG(newTab2.swimTimeMiliseconds) as avg_Time, g
         from (select fact.meetid, gender, fact.athleteid, EXTRACT(year FROM age(current_date,birthdate::timestamp)) :: int as age \
             from athlete, fact, meet where fact.athleteid = athlete.athleteid and fact.meetid = meet.meetid)newTable, \
             fact where newTable.athleteId = fact.athleteId and swimtime != '00:00:00' and newTable.meetid = fact.meetid \
-        order by age)newTab2 group by rollup (newTab2.age_range, gender, newTab2.meetid) \
+        order by age)newTab2 where newTab2.swimTimeMiliseconds != 0 group by rollup (newTab2.age_range, gender, newTab2.meetid) \
         order by newTab2.age_range, gender"
 
 default_meetid = 41231234
@@ -32,7 +32,6 @@ data_female_1 = {}
 data_female_2 = {}
 
 for row in results:
-    print(row)
     if(row[2] == 'M'): 
         if( row[3] != None):
             if(int(row[3]) == default_meetid): data_male_1[row[0]] = int(row[1])
@@ -53,10 +52,10 @@ values_male_2 = list(data_male_2.values())
 values_female_1 = list(data_female_1.values())
 values_female_2 = list(data_female_2.values())
 
-plt.title("Average times by category, gender and meet")
+plt.title("Minimum times by category, gender and meet")
 plt.xlabel("Categories")
 plt.ylabel("Times")
-plt.xticks([0,1,2,3,4,5,6,7,8,9,10,11,12], categories)
+plt.xticks([0,1,2,3,4,5,6,7,8,9,10,11], categories)
 plt.plot(values_male_1, label="Men from meet " + str(default_meetid), color='royalblue')
 plt.plot(values_male_2, label="Men from meet " + str(default_meetid+1), color='darkturquoise', linestyle="--")
 plt.plot(values_female_1, label="Women from meet " + str(default_meetid), color='pink')

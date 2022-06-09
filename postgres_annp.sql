@@ -1,6 +1,5 @@
-DROP SCHEMA IF EXISTS  db_annp cascade;
-CREATE SCHEMA  db_annp ;
-SET search_path TO db_annp;
+DROP database IF EXISTS  db_annp cascade;
+CREATE database  db_annp ;
 
 CREATE TABLE old_meet  ( city  VARCHAR(25),  name  VARCHAR(75),   name_en  VARCHAR(75),  course  VARCHAR(25),  deadline  VARCHAR(25),  entrytype  VARCHAR(25),  number  VARCHAR(25),  organizer  VARCHAR(50),  organizer_url  VARCHAR(50),  result_url  VARCHAR(75),  startmethod  VARCHAR(25),  timing  VARCHAR(25),  type  VARCHAR(25),  withdrawuntil  VARCHAR(25),  nation  VARCHAR(25),  maxentriesathlete  VARCHAR(25),  entrystartdate  VARCHAR(25),  meetid  INT NOT NULL,PRIMARY KEY ( meetid ));
 -- CREATE TABLE   agedate  ( value  VARCHAR(25),  type  VARCHAR(25),  meetid  INT,  agedateid  INT NOT NULL,PRIMARY KEY ( agedateid ));

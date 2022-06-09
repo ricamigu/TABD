@@ -38,8 +38,8 @@ sql =  "select newTab.completeName, newTab.min as minimum, newTab.avg as average
         from (select DISTINCT fact.athleteid, license, completeName, MIN(points) as min, AVG(points) as avg, MAX(points) as max from fact, athlete, \
         club where points is not NULL and fact.athleteid = athlete.athleteid and fact.clubid = club.clubid group by fact.athleteid, code, license, completeName)newTab, club, fact \
         where newTab.athleteid = fact.athleteid and club.clubid = fact.clubid and club.code = '" + code + "' \
-        group by (newTab.max, newTab.avg,newTab.min, newTab.completeName,code, license) \
-        order by max desc \
+        group by (newTab.avg, newTab.max, newTab.avg,newTab.min, newTab.completeName,code, license) \
+        order by avg desc \
         limit 5" 
 
 cursor_psql.execute(sql)

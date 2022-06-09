@@ -3,7 +3,7 @@ import numpy as np
 import psycopg2
 
 fig = plt.figure(figsize=(5, 5))
-grid = plt.GridSpec(2, 3, hspace=0.2, wspace=0.2)
+grid = plt.GridSpec(2, 3, hspace=0.3, wspace=0.4)
 main_x = fig.add_subplot(grid[0, :2])
 pie = fig.add_subplot(grid[0, 2])
 box = fig.add_subplot(grid[1,0])
